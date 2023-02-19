@@ -14,4 +14,10 @@ const handleListen = () => console.log("Listening");
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
+const handleConnection = function (socket) {
+  console.log(socket);
+};
+
+wss.on("connection", handleConnection); // 이벤트 수신
+
 server.listen(3000, handleListen);
