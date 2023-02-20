@@ -14,10 +14,15 @@ const handleListen = () => console.log("Listening");
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
-const handleConnection = function (socket) {
-  console.log(socket);
-};
-
-wss.on("connection", handleConnection); // 이벤트 수신
+wss.on("connection", (socket) => {
+  console.log("Connected to Browser ✅");
+  socket.on("close", () => {
+    console.log("Disconnected from the browser ❌");
+  });
+  socket.on("message", (message) => {
+    console.log(message.toString("utf-8"));
+  });
+  socket.send("hello!!");
+});
 
 server.listen(3000, handleListen);
