@@ -14,15 +14,32 @@ const handleListen = () => console.log("Listening");
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
+const sockets = [];
+
 wss.on("connection", (socket) => {
   console.log("Connected to Browser ✅");
+  sockets.push(socket);
+  socket["nickname"] = "Anonymous";
   socket.on("close", () => {
     console.log("Disconnected from the browser ❌");
   });
-  socket.on("message", (message) => {
-    console.log(message.toString("utf-8"));
+
+  socket.on("message", (res) => {
+    const message = JSON.parse(res.toString("utf-8"));
+    console.log(message);
+    switch (message.type) {
+      case "new_message":
+        console.log("new message");
+        sockets.forEach((aSocket) =>
+          aSocket.send(`${socket.nickname}: ${message.payload}`)
+        );
+        break;
+      case "nickname":
+        console.log("try to change nickname");
+        socket["nickname"] = message.payload;
+        break;
+    }
   });
-  socket.send("hello!!");
 });
 
 server.listen(3000, handleListen);
