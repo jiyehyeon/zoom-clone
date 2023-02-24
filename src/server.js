@@ -14,8 +14,18 @@ const server = http.createServer(app);
 const io = SocketIO(server);
 
 io.on("connection", (socket) => {
-  console.log(socket);
+  socket.on(
+    "room",
+    (msg, done) => {
+      console.log(msg);
+      setTimeout(() => {
+        done();
+      });
+    },
+    10000
+  );
 });
+
 // wss.on("connection", (socket) => {
 //   console.log("Connected to Browser ✅");
 //   sockets.push(socket);
