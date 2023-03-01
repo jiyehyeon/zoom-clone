@@ -30,6 +30,10 @@ io.on("connection", (socket) => {
     console.log(roomName, arg);
     socket.to(roomName).emit("message", arg);
   });
+
+  socket.on("disconnecting", () => {
+    socket.rooms.forEach((room) => socket.to(room).emit("leave"));
+  });
 });
 
 // wss.on("connection", (socket) => {
