@@ -14,16 +14,22 @@ const server = http.createServer(app);
 const io = SocketIO(server);
 
 io.on("connection", (socket) => {
-  socket.on(
-    "room",
-    (msg, done) => {
-      console.log(msg);
-      setTimeout(() => {
-        done();
-      });
-    },
-    10000
-  );
+  let roomName;
+
+  // socket.onAny((event) => {
+  //   console.log(`Socket Event:${event}`);
+  // });
+
+  socket.on("enter_room", (roomName, callback) => {
+    socket.join(roomName);
+    callback();
+    socket.to(roomName).emit("welcome");
+  });
+
+  socket.on("message", (roomName, arg) => {
+    console.log(roomName, arg);
+    socket.to(roomName).emit("message", arg);
+  });
 });
 
 // wss.on("connection", (socket) => {
